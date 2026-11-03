@@ -1,0 +1,3 @@
+# Os motores falsos dos tests son scripts con shebang; con CRLF fallan
+# (`/usr/bin/env: use -[v]S`) e os tests do pipeline non executan en Windows.
+tests/fake_bin/* text eol=lf
