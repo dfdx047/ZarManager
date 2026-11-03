@@ -136,7 +136,12 @@ class WelcomeView(QWidget):
 
         if not self.cfg.get("language"):
             system_lang = (os.environ.get("LANG") or "en").lower()
-            self.cfg.set("language", "pt-br" if "pt" in system_lang else "en")
+            if "pt" in system_lang:
+                self.cfg.set("language", "pt-br")
+            elif "es" in system_lang:
+                self.cfg.set("language", "es")
+            else:
+                self.cfg.set("language", "en")
         if not self.cfg.get("theme"):
             self.cfg.set("theme", "Preto" if platform.system() == "Linux" else SYSTEM_THEME)
 

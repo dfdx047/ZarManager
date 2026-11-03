@@ -476,10 +476,253 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "btn_later": "Later",
         "btn_close": "Close",
     },
+
+    "es": {
+        # ---------------------------------------------------------- navegación
+        "app_title": "ZarManager",
+        "nav_auto": "Automático",
+        "nav_arc": "Archivos",
+        "nav_iso": "ISO",
+        "nav_zar": "Comprimir",
+        "nav_settings": "Configuración",
+        "nav_about": "Acerca de",
+        "nav_help": "Ayuda",
+        "tip_auto": "Detecta el formato y encadena los pasos solo.",
+        "tip_extract_arc": "Solo extrae ZIP, RAR y 7z.",
+        "tip_extract": "Solo extrae imágenes de disco.",
+        "tip_compress": "Solo comprime carpetas a .zar.",
+
+        # ------------------------------------------------------------- bienvenida
+        "welcome_hero": "ZarManager",
+        "welcome_sub": "Extrae, convierte y comprime tu biblioteca sin salir de la aplicación.",
+        "welcome_lang_title": "¿En qué idioma prefieres trabajar?",
+        "welcome_lang_desc": "Puedes cambiarlo en cualquier momento en la configuración.",
+        "welcome_theme_title": "Elige el aspecto",
+        "welcome_theme_desc": "Haz clic en una tarjeta para ver el tema aplicado al momento.",
+        "welcome_dirs_title": "¿Dónde están tus archivos?",
+        "welcome_dirs_desc": "Opcional ahora — puedes definirlo después en la pantalla principal.",
+        "welcome_step": "Paso {current} de {total}",
+        "btn_back": "Atrás",
+        "btn_next": "Continuar",
+        "btn_start_using": "Empezar a usar",
+        "btn_skip": "Saltar",
+
+        # ------------------------------------------------------------ área de trabajo
+        "lbl_source": "Origen",
+        "lbl_target": "Destino",
+        "btn_browse": "Buscar…",
+        "btn_refresh": "Actualizar lista",
+        "lbl_items": "Elementos encontrados",
+        "btn_select_all": "Seleccionar todos",
+        "msg_no_files": "Ningún archivo compatible en esta carpeta.",
+        "msg_no_source": "Elige una carpeta de origen para empezar.",
+        "lbl_selected": "{checked} de {total} seleccionados",
+        "btn_start": "Iniciar",
+        "btn_pause": "Pausar",
+        "btn_resume": "Retomar",
+        "btn_cancel": "Cancelar",
+        "lbl_console": "Registro",
+        "btn_clear_console": "Limpiar",
+        "lbl_progress": "{done} de {total} procesados",
+
+        # --------------------------------------------------------------- etapas
+        "stage_archive": "Extrayendo archivo",
+        "stage_xiso": "Extrayendo imagen",
+        "stage_stfs": "Extrayendo paquete de Xbox 360",
+        "stage_god": "Reconstruyendo la imagen (GOD)",
+        "stage_zar": "Comprimiendo (.zar)",
+        "stage_rvz": "Convirtiendo (.rvz)",
+        "stage_chd": "Convirtiendo (.chd)",
+        "stage_pkg": "Extrayendo paquete",
+
+        # -------------------------------------------------------------- estados
+        "state_queued": "En cola",
+        "state_running": "Procesando",
+        "state_done": "Completado",
+        "state_failed": "Falló",
+        "state_skipped": "Omitido",
+        "state_cancelled": "Cancelado",
+
+        # ------------------------------------------------------------- formatos
+        "fmt_archive": "Archivo comprimido",
+        "fmt_game_dir": "Carpeta de juego",
+        "fmt_xiso": "Imagen de Xbox (XDVDFS)",
+        "fmt_stfs": "Paquete de Xbox 360 (XBLA/DLC)",
+        "fmt_god": "Games on Demand",
+        "fmt_gc_iso": "GameCube",
+        "fmt_wii_iso": "Wii",
+        "fmt_iso9660": "Imagen ISO9660",
+        "fmt_cd_image": "Imagen de CD",
+        "fmt_pkg_ps3": "Paquete PS3",
+        "fmt_pkg_ps4": "Paquete PS4",
+        "fmt_zar": "ZArchive",
+        "fmt_rvz": "RVZ",
+        "fmt_chd": "CHD",
+        "fmt_unknown": "Formato desconocido",
+
+        # -------------------------------------------------------------- eventos
+        "ev_job_start": "Iniciando: {count} elemento(s) en modo {mode}.",
+        "ev_env_ok": "Entorno verificado. Motores operativos.",
+        "ev_engine_missing": "Motores faltantes: {engines}",
+        "ev_engine_optional_missing": "Motores opcionales ausentes: {engines}. Esos formatos se omitirán.",
+        "ev_item_start": "{name}: detectado como {fmt}.",
+        "ev_item_done": "{name} → {output}",
+        "ev_item_failed": "{name}: {error}",
+        "ev_item_unknown": "{name}: formato no reconocido, omitido.",
+        "ev_item_no_route": "{name} ({fmt}): sin motor para este formato ({engines}).",
+        "ev_item_nothing_to_do": "{name}: ya está en el formato final.",
+        "ev_item_skip_exists": "{name}: ya existe en el destino, omitido.",
+        "ev_collision_rename": "Conflicto evitado: guardado como {name}.",
+        "ev_collision_overwrite": "Sustituido: {name}",
+        "ev_original_removed": "Original eliminado: {name}",
+        "ev_original_remove_failed": "No se pudo eliminar {name}: {error}",
+        "ev_target_is_item": "{name} es el propio directorio de destino y fue omitido.",
+        "ev_cancel_requested": "Cancelación solicitada. Deteniendo los motores…",
+        "ev_paused": "En pausa.",
+        "ev_resumed": "Retomado.",
+        "ev_job_done": "Terminado: {completed} completado(s), {failed} fallo(s), {skipped} omitido(s).",
+        "ev_job_cancelled": "Lote cancelado por el usuario.",
+
+        # --------------------------------------------------------------- errores
+        "err_generic": "Error inesperado.",
+        "err_engine_missing": "El motor {engine} no está disponible.",
+        "err_engine_failed": "El motor {engine} terminó con código {code}.",
+        "err_elevation_required": "Windows bloqueó el motor {engine} por falta de privilegios.",
+        "err_cancelled": "Operación cancelada.",
+        "err_no_route": "No hay manera de convertir {source} en {target}.",
+
+        # ------------------------------------------------------------ configuración
+        "set_title": "Configuración",
+        "set_appearance": "Apariencia",
+        "set_language": "Idioma",
+        "set_theme": "Tema",
+        "set_motion": "Reducir animaciones",
+        "set_motion_hint": "Desactiva el salto de las píldoras y las transiciones.",
+        "set_audio": "Sonido",
+        "set_sfx": "Efectos de sonido",
+        "set_volume": "Volumen",
+        "set_test_sound": "Probar",
+        "set_performance": "Rendimiento",
+        "set_workers": "Tareas en paralelo: {value}",
+        "set_workers_hint": "Más tareas no significa más rápido: extraer y comprimir saturan el disco. Entre 2 y 4 suele ser el punto óptimo.",
+        "set_files": "Archivos",
+        "set_keep_originals": "Mantener los originales después de procesar",
+        "set_collision": "Cuando ya existe en el destino",
+        "collision_ask": "Preguntar",
+        "collision_skip": "Omitir",
+        "collision_overwrite": "Sustituir",
+        "collision_rename": "Renombrar (_1)",
+        "set_updates": "Actualizaciones",
+        "set_auto_update": "Buscar actualizaciones al iniciar",
+
+        # -------------------------------------------------------------- acerca de
+        "about_title": "Acerca de",
+        "about_tagline": "Gestor de extracción y compresión para bibliotecas de juegos.",
+        "about_version": "Versión",
+        "about_dev": "Desarrollo",
+        "about_license": "Licencia",
+        "about_platform": "Plataforma",
+        "about_engines": "Motores incluidos",
+        "about_engines_desc": "Cada motor es un programa aparte, con su propia licencia.",
+        "about_updated": "Estás actualizado",
+        "about_update_available": "Hay una versión nueva",
+        "btn_repo": "Repositorio en GitHub",
+        "btn_kofi": "Apoyar en Ko-fi",
+        "btn_check_update": "Buscar actualizaciones",
+        "btn_troubleshoot": "Solución de problemas",
+
+        # ------------------------------------------------------- solución de problemas
+        "ts_title": "Solución de problemas",
+        "ts_sub": "Primero lo que suele resolverlo en tu sistema; lo demás queda plegado.",
+        "ts_engines": "Estado de los motores",
+        "ts_engines_desc": "Si alguno aparece con ✗, probablemente el antivirus borró el archivo.",
+        "btn_check_engines": "Verificar motores",
+        "btn_copy_diag": "Copiar diagnóstico",
+        "btn_open_logs": "Abrir carpeta de registros",
+        "btn_copy_command": "Copiar comando",
+        "ts_copied": "Copiado.",
+        "ts_engine_native": "Integrado en la aplicación",
+        "ts_win_title": "Windows: el antivirus borra los motores",
+        "ts_win_body": (
+            "ZarManager se distribuye como carpeta portátil. El ejecutable y la carpeta "
+            "'bin' deben ir juntos — mover el .exe fuera rompe el programa.\n\n"
+            "Si Windows Defender borra algo dentro de 'bin', añade la carpeta completa "
+            "a las exclusiones: Seguridad de Windows → Protección contra virus → "
+            "Gestionar configuraciones → Agregar exclusión → Carpeta."
+        ),
+        "ts_lin_title": "Linux: la AppImage no abre",
+        "ts_lin_body": (
+            "Da permiso de ejecución al archivo y confirma que tienes FUSE instalado.\n"
+            "Si abre pero no encuentra los motores, comprueba que la carpeta 'bin' "
+            "acompaña al binario."
+        ),
+        "ts_mac_title": "macOS: 'aplicación dañada'",
+        "ts_mac_body": (
+            "Gatekeeper marca los binarios descargados sin firma de Apple. "
+            "Quita la cuarentena con el comando de abajo y vuelve a abrir."
+        ),
+        "ts_perf_title": "Va lento o el disco se satura",
+        "ts_perf_body": (
+            "Baja las tareas en paralelo en la configuración. Extraer y comprimir son "
+            "operaciones limitadas por el disco, y ejecutar ocho a la vez suele salir "
+            "más lento que ejecutar dos."
+        ),
+
+        # --------------------------------------------------------------- diálogos
+        "dlg_collision_title": "Ya existe en el destino",
+        "dlg_collision_desc": "Algunos elementos ya tienen resultado en la carpeta de destino. ¿Qué quieres hacer?",
+        "btn_skip_existing": "Omitir los existentes",
+        "btn_overwrite": "Sustituir",
+        "btn_rename": "Renombrar (_1)",
+        "dlg_delete_title": "¿Borrar los originales?",
+        "dlg_delete_desc": "Los originales solo se borran después de que el resultado llegue al destino.",
+        "btn_delete_originals": "Borrar después de procesar",
+        "btn_keep_originals": "Mantener originales",
+        "dlg_done_title": "Completado",
+        "dlg_done_desc": "{completed} elemento(s) procesado(s) sin errores.",
+        "dlg_partial_title": "Completado con fallos",
+        "dlg_partial_desc": "{completed} completado(s), {failed} con fallo. Mira el registro.",
+        "dlg_failed_title": "Falló",
+        "dlg_failed_desc": "Ningún elemento se completó. Mira el registro para ver el motivo.",
+        "dlg_cancelled_title": "Cancelado",
+        "dlg_cancelled_desc": "El lote se detuvo. No se guardó nada en el destino.",
+        "dlg_env_title": "Motores faltantes",
+        "dlg_env_desc": "Faltan estos motores: {engines}\n\nMira la Solución de problemas.",
+        "av_alert_title": "Motor eliminado durante la ejecución",
+        "av_alert_msg": (
+            "El archivo {engine} desapareció mientras ZarManager lo usaba. "
+            "Casi siempre es el antivirus borrándolo por un falso positivo.\n\n"
+            "Tus archivos originales no fueron tocados."
+        ),
+        "warn_exit_title": "Hay trabajo en curso",
+        "warn_exit_msg": "Salir ahora cancela lo que está ejecutándose. Los originales quedan intactos.",
+        "btn_exit_yes": "Salir y cancelar",
+        "btn_exit_no": "Seguir trabajando",
+        "warn_same_dir": "El origen y el destino son la misma carpeta.",
+        "warn_target_inside_source": "El destino está dentro del origen. Funciona, pero los resultados aparecerán en la lista de entrada.",
+        "msg_err_target": "Define la carpeta de destino.",
+        "msg_err_select": "Selecciona al menos un elemento.",
+        "msg_err_running": "Ya hay un procesamiento en curso.",
+
+        # ----------------------------------------------------------- actualizaciones
+        "upd_title": "Actualización",
+        "upd_checking": "Buscando actualizaciones…",
+        "upd_available": "La versión {version} está disponible",
+        "upd_latest": "Estás en la última versión ({version})",
+        "upd_error": "No se pudo contactar con el servidor",
+        "upd_downloading": "Descargando…",
+        "upd_installed": "Versión instalada: {version}",
+        "upd_no_asset": "No hay binario para tu sistema en esta release.",
+        "upd_checksum_failed": "El archivo descargado no coincide con el checksum publicado. Actualización abortada.",
+        "upd_restart": "Descarga completada. Reiniciando…",
+        "btn_download_update": "Actualizar ahora",
+        "btn_later": "Más tarde",
+        "btn_close": "Cerrar",
+    },
 }
 
 DEFAULT_LANGUAGE = "pt-br"
-LANGUAGES = {"pt-br": "Português (Brasil)", "en": "English"}
+LANGUAGES = {"pt-br": "Português (Brasil)", "en": "English", "es": "Español"}
 
 
 def get_text(lang: str, key: str, fallback: str = "", **args) -> str:
