@@ -113,6 +113,24 @@ class StfsReaderTest(unittest.TestCase):
                 self.assertEqual((destino / nome).read_bytes(), dados)
 
     # ----------------------------------------------------------- segurança
+    def test_cadeia_da_tabela_de_hash_e_big_endian(self):
+        """A real hash-table entry (Shadow Complex, block 0).
+
+        20 bytes of hash + 0x80 (block in use) + `00 00 01` -> the next block is
+        1. Read as little-endian it gives 65536, the chain breaks at the second
+        block of the file table, and the extraction ends with garbage names
+        (Errno 22) or an impossible size.
+        """
+        from core.xbox.stfs import _u24_be, _u24_le
+
+        record = (bytes.fromhex("96f017f658615c7a7142a5142fc78c2a68b0adba")
+                  + b"\x80\x00\x00\x01")
+
+        self.assertEqual(record[0x14], 0x80)
+        self.assertEqual(_u24_be(record[0x15:0x18]), 1)
+        self.assertEqual(_u24_le(record[0x15:0x18]), 65536,
+                         "this was the bug: little-endian breaks the chain")
+
     def test_nome_com_travessia_fica_dentro_do_destino(self):
         package = self.build([("..%2f..%2fevil.txt", b"nao devia sair")])
         destino = self.extract(package)

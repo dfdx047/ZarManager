@@ -212,5 +212,5 @@ class StfsBuilder:
             image.extend(b"\x00" * (offset + HASH_ENTRY_SIZE - len(image)))
         record = bytearray(HASH_ENTRY_SIZE)
         record[0x14] = 0x80                                        # bloco em uso
-        record[0x15:0x18] = next_block.to_bytes(3, "little")
+        record[0x15:0x18] = next_block.to_bytes(3, "big")           # big-endian, as real packages store it
         image[offset:offset + HASH_ENTRY_SIZE] = record

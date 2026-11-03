@@ -62,6 +62,10 @@ def _u24_le(data: bytes) -> int:
     return data[0] | (data[1] << 8) | (data[2] << 16)
 
 
+def _u24_be(data: bytes) -> int:
+    return (data[0] << 16) | (data[1] << 8) | data[2]
+
+
 @dataclass
 class StfsEntry:
     name: str
@@ -187,7 +191,10 @@ class StfsPackage:
         record = self._read_at(offset, HASH_ENTRY_SIZE)
         if len(record) < HASH_ENTRY_SIZE:
             raise StfsError(f"tabela de hash truncada no bloco {block}")
-        return record[0x14], _u24_le(record[0x15:0x18])
+        # The next block is big-endian. The file-entry fields really are
+        # little-endian, which is why the test writer shared this mistake: a
+        # synthetic package reads itself and the bug never shows up.
+        return record[0x14], _u24_be(record[0x15:0x18])
 
     # -------------------------------------------------- tabela de ficheiros
     def _read_file_table(self) -> None:
