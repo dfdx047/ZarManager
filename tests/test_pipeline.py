@@ -24,6 +24,7 @@ from core.errors import EngineMissing            # noqa: E402
 from core.events import ItemState                # noqa: E402
 from core.job import JobRequest, JobRunner       # noqa: E402
 from core.planner import Mode                    # noqa: E402
+from core.stages.base import SCRATCH_NAME_LIMIT, StageContext  # noqa: E402
 from core.workspace import WORK_DIR_NAME         # noqa: E402
 
 FAKE_BIN = ROOT / "tests" / "fake_bin"
@@ -497,6 +498,29 @@ class RobustnessTest(PipelineTest):
         self.assertEqual(result.completed, 0)
         self.assertTrue(pacote.exists(), "o original tem de sobreviver")
         self.assertEqual(list(self.target.glob("*.zar")), [])
+
+    def test_o_nome_de_trabalho_e_curto_e_o_destino_conserva_o_nome(self):
+        """The work name is only work; what is delivered is the item name.
+
+        The work-area prefix consumes the Windows limit when the item name is
+        long, and the engine writes inside it. A short work name leaves room for
+        the internal structure of the package without touching the name the user
+        sees.
+        """
+        long_name = "Dark Messiah - Might and Magic - Elements (USA, Europe) (En,Fr,Es,It)"
+        item = make_xbox_iso(self.source / f"{long_name}.iso")
+        result = self.build([item]).run()
+
+        self.assertEqual(result.completed, 1)
+        self.assertTrue((self.target / f"{long_name}.zar").exists())
+
+        ctx = StageContext(base_name=long_name, work_dir=self.tmp / "trabalho",
+                           target_dir=self.target, runner=None, resolver=None)
+        leaf = ctx.temp_path("_xiso")
+
+        self.assertEqual(leaf.parent, ctx.work_dir)
+        self.assertLessEqual(len(leaf.name), SCRATCH_NAME_LIMIT + len("_xiso"))
+        self.assertNotIn(" ", leaf.name)
 
 
 if __name__ == "__main__":

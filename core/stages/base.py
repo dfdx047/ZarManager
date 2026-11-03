@@ -22,6 +22,19 @@ from pathlib import Path
 from typing import ClassVar
 
 from core.formats import Fmt, payload_path, sniff
+from core.workspace import slugify
+
+# Names of the intermediate files. The name the user sees is decided by
+# delivery (`JobRunner._deliver`), not by these files, so the work name can be
+# short -- and it should be: on Windows the full path is the work-area prefix
+# plus whatever the engine writes inside it, and the prefix alone can eat the
+# 260 limit before the last file.
+SCRATCH_NAME_LIMIT = 40
+
+
+def scratch_name(base_name: str) -> str:
+    """Work name from the item name, without path characters."""
+    return slugify(base_name, SCRATCH_NAME_LIMIT)
 
 
 @dataclass(frozen=True)
@@ -54,7 +67,7 @@ class StageContext:
 
     def temp_path(self, suffix: str = "") -> Path:
         self.work_dir.mkdir(parents=True, exist_ok=True)
-        return self.work_dir / f"{self.base_name}{suffix}"
+        return self.work_dir / f"{scratch_name(self.base_name)}{suffix}"
 
     def suggest_name(self, name: str) -> None:
         """Propõe um nome melhor para o resultado final, se for utilizável."""
