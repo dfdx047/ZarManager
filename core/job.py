@@ -27,7 +27,7 @@ from typing import Callable
 from core.engines import ENGINES, EngineResolver
 from core.errors import Cancelled, CoreError, EngineMissing, NoRoute
 from core.events import Event, ItemState, ItemStatus, JobResult, Level, Progress
-from core.formats import Fmt, sniff
+from core.formats import Fmt, payload_path, sniff
 from core.planner import Mode, Planner
 from core.runner import CancelToken, ProcessRunner
 from core.stages.base import Artifact, StageContext, looks_like_identifier
@@ -207,7 +207,12 @@ class JobRunner:
         )
 
         executed = 0
-        artifact = Artifact(item, sniff(item))
+        # A folder can be only the wrapper of a container (XBLA/GOD) or of an
+        # image. `sniff` already looks inside; the path has to point at the real
+        # content, otherwise the stages open the folder itself, which on Windows
+        # is PermissionError [Errno 13] (IsADirectoryError on POSIX).
+        start = payload_path(item)
+        artifact = Artifact(start, sniff(start))
 
         try:
             if artifact.fmt is Fmt.UNKNOWN:

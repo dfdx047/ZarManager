@@ -160,13 +160,19 @@ def _xbox_container(files: list[Path], dirs: list[Path]) -> tuple[Fmt, Path] | N
     o dashboard escreve para um Games on Demand (o cabeçalho mais a pasta
     `.data` ao lado). Sem isto, o sniff da pasta dava GAME_DIR e o planeador
     mandava o contentor inteiro para o zarchive sem o abrir.
+
+    It must be the *only* thing in the folder. An already extracted game folder
+    can hold a file with container magic among its achievements (`AvatarAwards`
+    in an XBLA package) without the folder being that container's wrapper:
+    reading it as STFS made the stage run again on the folder itself, which on
+    Windows is PermissionError [Errno 13].
     """
-    candidates = [(f, _sniff_file(f)) for f in files]
-    matches = [(f, fmt) for f, fmt in candidates if fmt in (Fmt.STFS, Fmt.GOD)]
-    if len(matches) != 1:
+    if len(files) != 1:
         return None
 
-    header, fmt = matches[0]
+    header, fmt = files[0], _sniff_file(files[0])
+    if fmt not in (Fmt.STFS, Fmt.GOD):
+        return None
     if fmt is Fmt.GOD:
         data = god_data_dir(header)
         extra = [d for d in dirs if data is None or d.name != data.name]

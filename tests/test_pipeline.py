@@ -366,6 +366,31 @@ class RobustnessTest(PipelineTest):
         self.assertIs(sniff(pasta), Fmt.STFS)
         self.assertEqual(payload_path(pasta), pacote)
 
+    def test_pasta_involucro_procesa_o_contentor_e_nao_a_pasta(self):
+        """The real case: the folder chosen is <contentid>/<type>/<package>.
+
+        `sniff` looks inside and returns STFS, but the `Artifact` pointed at the
+        folder. Opening a folder with `open()` is Errno 13 on Windows and
+        IsADirectoryError on POSIX; here the chain has to end in a .zar.
+        """
+        from core.formats import payload_path
+        from tests.stfs_builder import StfsBuilder
+
+        pasta = self.source / "Castle Crashers (World) (XBLA)"
+        contentor = pasta / "584108B7" / "000D0000"
+        contentor.mkdir(parents=True)
+        cabecalho = contentor / "F9432A7F"
+        StfsBuilder().add_file("default.xex", b"XEX2").build(cabecalho)
+
+        self.assertEqual(payload_path(pasta), cabecalho)
+
+        result = self.build([pasta]).run()
+
+        self.assertEqual(result.failed, 0, "the folder is only the wrapper of the package")
+        self.assertEqual(result.completed, 1)
+        zars = list(self.target.glob("*.zar"))
+        self.assertEqual(len(zars), 1, f"expected one .zar, got {zars}")
+
     def test_distingue_god_de_pacote_stfs(self):
         """Mesmo cabeçalho; o que muda é a pasta .data ao lado."""
         from core.formats import Fmt, payload_path, sniff
@@ -385,6 +410,91 @@ class RobustnessTest(PipelineTest):
         self.assertIs(sniff(cabecalho), Fmt.GOD)
         self.assertIs(sniff(pasta), Fmt.GOD)
         self.assertEqual(payload_path(pasta), cabecalho)
+
+    def test_pasta_de_jogo_com_um_contentor_dentro_nao_e_involucro(self):
+        """An extracted XBLA package can carry `AvatarAwards` (LIVE magic) among its
+        achievements.
+
+        The folder holds several files: it is the game content, not the wrapper of
+        the container. Classifying it as STFS made the stage run again on the
+        folder, and opening a folder is Errno 13 on Windows.
+        """
+        from core.formats import Fmt, payload_path, sniff
+        from tests.stfs_builder import StfsBuilder
+
+        pasta = self.source / "DeathSpank (World) (XBLA)"
+        pasta.mkdir()
+        StfsBuilder().add_file("precomp", b"XEX2").build(pasta / "AvatarAwards")
+        (pasta / "default.xex").write_bytes(b"XEX2fake")
+        (pasta / "achievement01.png").write_bytes(b"\x89PNG")
+
+        self.assertIs(sniff(pasta), Fmt.GAME_DIR)
+        self.assertEqual(payload_path(pasta), pasta)
+
+        result = self.build([pasta], mode=Mode.COMPRESS).run()
+        self.assertEqual(result.failed, 0, "the folder was the content, not a wrapper")
+        self.assertEqual(result.completed, 1)
+
+    def test_sniff_e_payload_path_nao_podem_divergir(self):
+        """The invariant that holds the `job.py` fix up.
+
+        If `sniff` looks inside a folder, `payload_path` has to return that same
+        content. Without it an `Artifact` can carry the format of the content and
+        the path of the folder that wraps it, and opening a folder is Errno 13 on
+        Windows. The three branches of `_sniff_dir` are covered: single content,
+        single subdirectory and a mixed folder (which is NOT a wrapper).
+        """
+        from core.formats import Fmt, payload_path, sniff
+        from tests.god_builder import make_xdvdfs_image
+        from tests.stfs_builder import StfsBuilder
+
+        imagem = make_xdvdfs_image(40)
+
+        wrapper_iso = self.source / "invólucro"
+        wrapper_iso.mkdir()
+        (wrapper_iso / "game.iso").write_bytes(imagem)
+
+        wrapper_cd = self.source / "cd"
+        wrapper_cd.mkdir()
+        cabecalho_iso9660 = bytearray(0x9000)
+        cabecalho_iso9660[0x8001:0x8006] = b"CD001"
+        (wrapper_cd / "image.bin").write_bytes(bytes(cabecalho_iso9660))
+
+        wrapper_hoja = self.source / "hoja"
+        wrapper_hoja.mkdir()
+        (wrapper_hoja / "audio.cue").write_text('FILE "audio.bin" BINARY\n  TRACK 01 MONO 2:32\n')
+        (wrapper_hoja / "audio.bin").write_bytes(b"\x01" * 512)
+
+        capas = self.source / "capas"
+        interior = capas / "sub"
+        interior.mkdir(parents=True)
+        pacote = interior / "C0DEF10E"
+        StfsBuilder().add_file("default.xex", b"XEX2").build(pacote)
+
+        mixta = self.source / "mixta"
+        mixta.mkdir()
+        (mixta / "game.iso").write_bytes(imagem)
+        (mixta / "LEEME.txt").write_text("this folder is not a wrapper")
+        (mixta / "sub").mkdir()
+
+        for pasta in (wrapper_iso, wrapper_cd, wrapper_hoja, capas, mixta):
+            with self.subTest(pasta=str(pasta.relative_to(self.source))):
+                self.assertEqual(
+                    sniff(payload_path(pasta)),
+                    sniff(pasta),
+                    "sniff and payload_path disagree on this folder",
+                )
+
+        self.assertEqual(payload_path(wrapper_iso), wrapper_iso / "game.iso")
+        self.assertEqual(payload_path(wrapper_hoja), wrapper_hoja / "audio.cue")
+        self.assertEqual(payload_path(capas), pacote)
+        self.assertEqual(payload_path(mixta), mixta)
+
+        # A lone `.bin` is not transparent: without its sheet, chdman converts in
+        # raw mode and loses the subchannels. The folder is compressed as it is,
+        # and the invariant still holds because `sniff` also reads it as GAME_DIR.
+        self.assertIs(sniff(wrapper_cd), Fmt.GAME_DIR)
+        self.assertEqual(payload_path(wrapper_cd), wrapper_cd)
 
     def test_auto_god_reconstroi_e_segue_para_zar(self):
         """A cadeia god -> xiso -> zar monta-se sozinha: três etapas, zero
