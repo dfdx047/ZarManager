@@ -62,3 +62,25 @@ class NoRoute(CoreError):
         super().__init__(f"Sem rota {source} -> {target}", source=source, target=target)
         self.source = source
         self.target = target
+
+
+class PathTooLong(CoreError):
+    """A path plus the structure inside it do not fit the Windows limit.
+
+    Only matters for the stages that write a tree of files, because that is
+    where the limit is felt. The engine does not distinguish it from any other
+    error: it returns code 1 and the user sees only "engine finished with code
+    1". This error exists to say which path is the problem and how much is
+    missing.
+    """
+
+    key = "err_path_too_long"
+
+    def __init__(self, path: str, depth: int, limit: int = 260, left: int = 0):
+        super().__init__(
+            f"Caminho longo demais: {path}", path=path, depth=depth, limit=limit, left=left
+        )
+        self.path = path
+        self.depth = depth
+        self.limit = limit
+        self.left = left

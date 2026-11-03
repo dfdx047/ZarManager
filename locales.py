@@ -121,6 +121,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "err_elevation_required": "O Windows bloqueou o motor {engine} por falta de privilégios.",
         "err_cancelled": "Operação cancelada.",
         "err_no_route": "Não há como converter {source} em {target}.",
+        "err_path_too_long": "Caminho longo demais para o Windows: {path}. Ficam {left} caracteres para os nomes internos e são precisos {depth} (limite {limit}).",
 
         # ------------------------------------------------------- configurações
         "set_title": "Configurações",
@@ -355,6 +356,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "err_elevation_required": "Windows blocked engine {engine} for lack of privileges.",
         "err_cancelled": "Operation cancelled.",
         "err_no_route": "No way to convert {source} into {target}.",
+        "err_path_too_long": "Path is too long for Windows: {path}. Only {left} characters are left for the internal names, {depth} are needed (limit {limit}).",
 
         "set_title": "Settings",
         "set_appearance": "Appearance",
