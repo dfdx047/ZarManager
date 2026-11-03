@@ -100,6 +100,9 @@ class MainWindow(QMainWindow):
             self.nav.add_pill(self.t(key), icon_text)
         self.nav.set_animated(not self.cfg.get_bool("reduce_motion"))
         self.nav.currentChanged.connect(self._on_mode_changed)
+        # The selection signal does not fire when the already checked pill is
+        # clicked again, so the mode screen is resolved on the click.
+        self.nav.pillClicked.connect(self._on_mode_changed)
 
         self.btn_settings = action_button("", "quiet")
         self.btn_about = action_button("", "quiet")

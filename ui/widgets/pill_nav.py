@@ -207,6 +207,7 @@ class PillNav(QFrame):
     """Barra de pílulas com indicador deslizante."""
 
     currentChanged = Signal(int)
+    pillClicked = Signal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -247,6 +248,11 @@ class PillNav(QFrame):
         self._buttons.append(button)
         self.group.addButton(button, index)
         self.layout().addWidget(button)
+        # An exclusive group does not emit `toggled` when the already checked pill is
+        # clicked again: the bar stays as it is and the caller never hears about it,
+        # which is exactly what broke the "back" from Settings. `clicked` is always
+        # emitted, so the navigation listens to this signal as well.
+        button.clicked.connect(lambda _=False, i=index: self.pillClicked.emit(i))
         if index == 0:
             button.setChecked(True)
         return button

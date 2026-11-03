@@ -139,6 +139,43 @@ class WidgetBuildTest(unittest.TestCase):
         view._on_item(ItemStatus("X.zip", ItemState.DONE))
         view._on_finished(JobResult(completed=1, total=1))
 
+    @unittest.skipIf(USING_STUB, "the Qt stub does not simulate widget state")
+    def test_pilula_repetida_volta_ao_workspace(self):
+        """Opening Settings does not move the marked pill, so clicking it again has
+        to go back to the mode screen.
+
+        An exclusive QButtonGroup does not emit `toggled` when the already checked
+        pill is clicked: the bar stays the same and the caller never hears about
+        it. That is why ISO -> Settings -> ISO left the view stuck on Settings.
+        """
+        from ui.main_window import MainWindow, PAGE_SETTINGS, PAGE_WORKSPACE
+
+        window = MainWindow(self.cfg, self.theme, self.sound)
+        self.addCleanup(window.close)
+        window.show()
+        self.app.processEvents()
+
+        pill_iso = window.nav._buttons[2]
+        pill_iso.click()
+        self.assertEqual(window.stack.currentIndex(), PAGE_WORKSPACE)
+
+        window.btn_settings.click()
+        self.assertEqual(window.stack.currentIndex(), PAGE_SETTINGS)
+
+        # The ISO pill is still the checked one: the click is the only signal.
+        self.assertEqual(window.nav.current_index(), 2)
+        pill_iso.click()
+        self.app.processEvents()
+
+        self.assertEqual(
+            window.stack.currentIndex(), PAGE_WORKSPACE,
+            "clicking the active pill has to return to the workspace",
+        )
+
+        # And the mode is not lost on the way.
+        from core.planner import Mode
+        self.assertEqual(window.workspace.mode, Mode.EXTRACT_ISO)
+
     @unittest.skipIf(USING_STUB, "o stub Qt não simula estado dos widgets")
     def test_selecionar_todos_marca_os_checkboxes(self):
         from PySide6.QtCore import QPoint, Qt
